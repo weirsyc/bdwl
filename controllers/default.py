@@ -72,13 +72,58 @@ def api():
 
 @auth.requires_login()
 def my_workouts():
-    form = SQLFORM.grid(db.workout)
+    form = SQLFORM.grid(db.workout.id_trainer==auth.user_id,
+                        links = [lambda row: A('Manage Workout',
+                                               _href=URL("manage_workout",
+                                                         args=[row.id]))])
     return dict(form=form)
 
 @auth.requires_login()
-def view_workout():
+def manage_workout():
     id_workout = request.args(0, cast=int)
-    return dict()
+    workout = (db.workout.id==id_workout)
+    form = SQLFORM.grid(workout, args=request.args[:1],
+                        links = [lambda row: A('Manage Exercises',
+                                   _href=URL("manage_exercises",
+                                             args=[id_workout, row.id]))])
+    return dict(form=form)
+
+@auth.requires_login()
+def manage_exercises():
+    id_workout = request.args(0, cast=int)
+    id_exercise = request.args(1, cast=int)
+    exercises = (db.exercise.id_workout==id_workout)
+    #Set visibility for exercise columns
+    db.exercise.id_workout.readable = False
+    db.exercise.id_workout.writable = False
+    db.exercise.id_workout.default = id_workout
+    db.exercise.id.readable = False
+    form = SQLFORM.grid(db.exercise, args=request.args[:2],
+                        links = [lambda row: A('Edit Reps',
+                                               _href=URL("edit_reps",
+                                                         args=[id_workout, id_exercise]))])
+    """
+    form = SQLFORM.smartgrid(db.exercise,
+                             constraints=dict(exercise=exercises),
+                             linked_tables=['reps'], args=request.args[:2])"""
+    return dict(form=form)
+
+@auth.requires_login()
+def edit_reps():
+    id_workout = request.args(0, cast=int)
+    id_exercise = request.args(1, cast=int)
+    #Set visibility for reps columns
+    db.reps.id_exercise.readable = False
+    db.reps.id_exercise.writable = False
+    db.reps.id_exercise.default = id_exercise
+    db.reps.id_workout.readable = False
+    db.reps.id_workout.writable = False
+    db.reps.id_workout.default = id_workout
+    db.reps.id.readable = False
+    record = db.reps(id_workout=id_workout,id_exercise=id_exercise)
+    form = SQLFORM(db.reps, record)
+    return dict(form=form)
+
 
 @auth.requires_login()
 def new_workout():
@@ -89,3 +134,11 @@ def new_workout():
         session.flash = 'New workout created'
         redirect(URL('my_workouts'))
     return locals()
+
+@auth.requires_login()
+def add_exercise():
+    """
+    requirements:
+    create new or choose exercise
+    add level, sets, and reps
+    """

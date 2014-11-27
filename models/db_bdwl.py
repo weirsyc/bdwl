@@ -16,14 +16,21 @@ db.define_table('video',
 db.define_table('exercise',
                 Field('name', 'string', requires=IS_NOT_EMPTY()),
                 Field('id_workout', 'reference workout', requires=IS_IN_DB(db, 'workout.id', '%(name)s')),
-                Field('id_video', 'reference video'),
+                Field('video_file', 'upload'),
                 Field('notes', 'string', widget=SQLFORM.widgets.text.widget))
 
 db.define_table('reps',
-                Field('level', 'integer'),
-                Field('first_set', 'integer'),
-                Field('second_set', 'integer'),
-                Field('third_set', 'integer'))
+                Field('id_exercise', 'reference exercise', requires=IS_NOT_EMPTY()),
+                Field('id_workout', 'reference workout', requires=IS_NOT_EMPTY()),
+                Field('levels', 'integer'),
+                Field('set1', 'integer'),
+                Field('set2', 'integer'),
+                Field('set3', 'integer'),
+                Field('weight1', 'integer'),
+                Field('weight2', 'integer'),
+                Field('weight3', 'integer'),
+                Field('user_input', 'integer'),
+                plural='Reps')
 
-def get_workout(trainer, client):
-    return db(db.workout.id_trainer==trainer & db.workout.id_client==client).select().first()
+def get_workout(trainer):
+    return db.workout(id_trainer=trainer)
