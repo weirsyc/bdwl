@@ -26,6 +26,11 @@ response.menu = [
     (T('Home'), False, URL('default', 'index'), [])
 ]
 
+if is_trainer():
+    response.menu.append((T('Manage'), False, URL(''),
+                          [(T('Workouts'), False, URL('manage', 'my_workouts')),
+                           (T('Exercises'), False, URL('manage', 'manage_exercises'))]))
+
 DEVELOPMENT_MENU = True
 
 #########################################################################
@@ -136,4 +141,4 @@ def _():
          )]
 if DEVELOPMENT_MENU: _()
 
-if "auth" in locals(): auth.wikimenu() 
+if "auth" in locals(): auth.wikimenu()

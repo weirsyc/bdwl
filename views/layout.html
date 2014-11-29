@@ -91,18 +91,7 @@
 
   <div class="container">
     <!-- Masthead ================================================== -->
-    <header class="mastheader row" id="header">
-      {{if response.title:}}
-        <div class="span12">
-            <div class="page-header">
-                <h1>
-                    {{=response.title}}
-                    <small>{{=response.subtitle or ''}}</small>
-                </h1>
-            </div>
-        </div>
-	{{pass}}
-    </header>
+
 
     <section id="main" class="main row">
         {{if left_sidebar_enabled:}}
@@ -171,4 +160,3 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   <script src="{{=URL('static','js/share.js',vars=dict(static=URL('static','images')))}}"></script>
 </body>
 </html>
-

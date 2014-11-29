@@ -49,7 +49,9 @@ plugins = PluginManager()
 
 ## create all tables needed by auth if not custom tables
 auth.settings.extra_fields['auth_user']= [
-    Field('role', requires=IS_IN_SET(["Trainer","Client"]))
+    Field('role', requires=IS_IN_SET(["Trainer","Client"]), default="Client"),
+    Field('weight', 'integer', requires=IS_NOT_EMPTY()),
+    Field('is_admin', 'boolean')
     ]
 auth.define_tables(username=False, signature=False)
 
