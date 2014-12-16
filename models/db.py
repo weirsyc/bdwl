@@ -24,7 +24,7 @@ else:
 
 ## by default give a view/generic.extension to all actions from localhost
 ## none otherwise. a pattern can be 'controller/function.extension'
-response.generic_patterns = ['*'] if request.is_local else []
+response.generic_patterns = ['*'] if request.is_local else ['*.json']
 
 ## (optional) optimize handling of static files
 # response.optimize_css = 'concat,minify,inline'
@@ -47,11 +47,13 @@ auth = Auth(db)
 service = Service()
 plugins = PluginManager()
 
+auth.settings.login_next = URL('view', 'my_workouts')
 ## create all tables needed by auth if not custom tables
 auth.settings.extra_fields['auth_user']= [
     Field('role', requires=IS_IN_SET(["Trainer","Client"]), default="Client"),
     Field('weight', 'integer', requires=IS_NOT_EMPTY()),
-    Field('is_admin', 'boolean')
+    Field('is_admin', 'boolean'),
+    Field('one_rm', 'integer')
     ]
 auth.define_tables(username=False, signature=False)
 

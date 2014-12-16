@@ -1,0 +1,22 @@
+{{extend 'layout.html'}}
+<h1>Client Feedback</h1>
+<br />
+    {{for row in feedback:}}
+        <div class="well" style="min-width:500px; max-width:800px;">
+            <p>
+                {{=PRE(SPAN(SPAN("{0} {1} ({2}) said this about workout {3}: \n"
+                                .format(row.auth_user.first_name,
+                                        row.auth_user.last_name,
+                                        row.auth_user.email,
+                                        row.workout.name),
+                                _style="font-weight:bold"),
+                            "{0}".format( row.feedback.note),
+                                _style="font-size:16px;min-height:500px;line-height: 36px; font-family='Helvetica Neue', Helvetica, Arial, sans-serif;"))}}
+            </p>
+            <p>{{=A(("Delete " + unichr(9650)), _class="btn btn-primary",
+                    _onclick="return confirm('Are you sure you would like to delete this feedback message?')",
+                    _href=URL('delete_feedback', args=[row.feedback.id]))}}
+            </p>
+        </div>
+    {{pass}}
+</table>

@@ -1,0 +1,43 @@
+{{extend 'layout.html'}}
+
+<div class="page-header">
+    <h1>
+        {{=exercise.name}}
+    </h1>
+</div>
+<div class="well">
+    <h3>
+        Description
+    </h3>
+    <p class="lead">{{=exercise.notes}}</p>
+</div>
+
+<div style="text-align:center;">
+    <h3>
+    Example
+    </h3>
+    <div class="wrapper">
+        <div class="h_iframe">
+        <!-- a transparent image is preferable -->
+        <img class="ratio" src="http://placehold.it/16x9"/>
+          <iframe id="ytplayer" type="text/html" width="100%" height="auto"
+          src="http://www.youtube.com/embed/{{=video}}?autoplay=1"
+          frameborder="0"></iframe>
+        </div>
+    </div>
+</div>
+<br />
+<div class="well">
+    <h3>
+        Tags
+    </h3>
+    <p class="lead">{{=exercise.tags}}</p>
+</div>
+
+<style>
+html,body        {height:100%;}
+.wrapper         {width:80%;height:100%;margin:0 auto;background:#CCC}
+.h_iframe        {position:relative;}
+.h_iframe .ratio {display:block;width:100%;height:auto;}
+.h_iframe iframe {position:absolute;top:0;left:0;width:100%; height:100%;}
+</style>

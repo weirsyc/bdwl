@@ -5,13 +5,13 @@
 ## Customize your APP title, subtitle and menus here
 #########################################################################
 
-response.logo = A(B('web',SPAN(2),'py'),XML('&trade;&nbsp;'),
-                  _class="brand",_href="http://www.web2py.com/")
+response.logo = A(B('Level',SPAN('Train')),XML('&trade;&nbsp;'),
+                  _class="brand",_href="/leveltrain/default/index")
 response.title = request.application.replace('_',' ').title()
 response.subtitle = ''
 
 ## read more at http://dev.w3.org/html5/markup/meta.name.html
-response.meta.author = 'Your Name <you@example.com>'
+response.meta.author = 'Curtis Weir <weirsyc@gmail.com>'
 response.meta.keywords = 'web2py, python, framework'
 response.meta.generator = 'Web2py Web Framework'
 
@@ -26,12 +26,18 @@ response.menu = [
     (T('Home'), False, URL('default', 'index'), [])
 ]
 
-if is_trainer():
-    response.menu.append((T('Manage'), False, URL(''),
-                          [(T('Workouts'), False, URL('manage', 'my_workouts')),
-                           (T('Exercises'), False, URL('manage', 'manage_exercises'))]))
+if auth.is_logged_in():
+        if is_trainer():
+            response.menu.append((T('Manage'), False, URL('manage', 'manage_workouts'),
+                                  [(T('Workouts'), False, URL('manage', 'manage_workouts')),
+                                   (T('Exercises'), False, URL('manage', 'manage_exercises')),
+                                   (T('My Clients'), False, URL('manage', 'client_list')),
+                                   (T('Queue'), False, URL('manage', 'my_queue')),
+                                   (T('Feedback'), False, URL('manage', 'feedback'))]))
+response.menu.append((T('My Workouts'), False, URL('view', 'my_workouts'), []))
+response.menu.append((T('Reports'), False, URL('view', 'reports'), []))
 
-DEVELOPMENT_MENU = True
+DEVELOPMENT_MENU = False
 
 #########################################################################
 ## provide shortcuts for development. remove in production

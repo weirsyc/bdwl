@@ -4,24 +4,150 @@ trainers the tools they need to create personal
 workouts for their clients
 """
 
+def index(): return dict(message="hello from manage.py")
+
 """
 User interface for managing workouts
 """
 @auth.requires_login()
-def my_workouts():
+def manage_workouts():
     if not is_trainer():
         redirect(URL('error'))
     db.workout.id_trainer.readable = False
     db.workout.id_trainer.writable = False
     db.workout.id_trainer.default = auth.user_id
     form = SQLFORM.grid(db.workout.id_trainer==auth.user_id,
-                        links = [lambda row: A('Exercises',
-                                               _href=URL("workout_exercises",
-                                                         args=[row.id])),
-                                 lambda row: A('Add Clients',
-                                               _href=URL("add_clients",
-                                                         args=[row.id]))])
+                        links = [lambda row: A('Manage',
+                                               _href=URL("workout",
+                                                         args=[row.id]))],
+                        oncreate = import_excel)
+
     return dict(form=form)
+
+@auth.requires_login()
+def import_excel(form):
+    if form.vars.excel_file:
+        process_file(form.vars.id)
+
+"""
+User interface for manually customizing workouts (reps)
+"""
+@auth.requires_login()
+def workout():
+    id_workout = request.args(0, cast=int)
+    if not owns_workout(id_workout):
+        redirect(URL('error'))
+    db.reps.id_workout.readable = False
+    db.reps.id_workout.writable = False
+    db.reps.id_workout.default = id_workout
+    session.id_workout=id_workout
+    form = SQLFORM.grid(db.reps.id_workout==id_workout,
+                        args=request.args[:1],
+                        onvalidation=process_new_reps)
+    name = db.workout[id_workout].name
+    return dict(form=form, name=name, id_workout=id_workout)
+
+"""
+User interface for manually customizing workouts (primary table)
+"""
+@auth.requires_login()
+def primary():
+    id_workout = request.args(0, cast=int)
+    if not owns_workout(id_workout):
+        redirect(URL('error'))
+    db.primary_reps.id_workout.readable = False
+    db.primary_reps.id_workout.writable = False
+    db.primary_reps.id_workout.default = id_workout
+    form = SQLFORM.grid(db.primary_reps.id_workout==id_workout,
+                        args=request.args[:1])
+    name = db.workout[id_workout].name
+    return dict(form=form, name=name, id_workout=id_workout)
+
+@auth.requires_login()
+def process_new_reps(form):
+    record = db.reps(id_workout=session.id_workout, code=form.vars.code, c_level=form.vars.c_level)
+    if (record) is not None:
+        session.flash = 'record updated'
+        if not record.is_accessory:
+            update_reps(record, form.vars)
+        redirect(URL('manage','workout', args=[session.id_workout]))
+
+@auth.requires_login()
+def update_reps(record, form_vars):
+    record.update_record(id_exercise=form_vars.id_exercise,   reps1=form_vars.reps1,
+                         weight=form_vars.weight,             reps2=form_vars.reps2,
+                         level_reps=form_vars.level_reps,     level_up=form_vars.level_up,
+                         is_current=form_vars.is_current,     variance=form_vars.variance, 
+                         is_accessory=form_vars.is_accessory)
+
+"""
+User interface for adding and removing client/trainer association
+"""
+@auth.requires_login()
+def manage_clients():
+    records = db(client).select(db.auth_user.ALL, limitby=(0, 15))
+
+    form = FORM(INPUT(_name='keyword', requires=IS_NOT_EMPTY()),
+                INPUT(_type='submit', _style="vertical-align:top"),
+                _method='GET')
+    if form.accepts(request.get_vars):
+        query = db.auth_user.first_name.contains(form.vars.keyword)
+        query = query|db.auth_user.last_name.contains(form.vars.keyword)
+        query = query|db.auth_user.email.contains(form.vars.keyword)
+        words = form.vars.keyword.split(" ")
+        if len(words) > 1:
+            query = query|(db.auth_user.first_name.contains(words[0])&
+                           db.auth_user.last_name.contains(words[1]))
+        records = db(query & client).select(db.auth_user.ALL)
+    return dict(form=form, records=records)
+
+"""
+Changes the membership status of a client
+"""
+@auth.requires_login()
+def modify_membership():
+    id_trainer = request.args(0, cast=int)
+    if not is_trainer():
+        redirect(URL('error'))
+    id_client = request.args(1,cast=int)
+    record = db.client_list(id_trainer=id_trainer, id_client=id_client)
+    if record is None:
+        add_client(id_trainer, id_client)
+        return 'Remove Client'
+    else:
+        remove_client(id_trainer, id_client)
+        return 'Add Client'
+
+"""
+Adds a client membership
+"""
+@auth.requires_login()
+def add_client(id_trainer, id_client):
+    db.client_list.insert(id_trainer=id_trainer,
+                         id_client=id_client)
+
+"""
+Removes a client membership
+"""
+@auth.requires_login()
+def remove_client(id_trainer, id_client):
+    return db((db.client_list.id_trainer==id_trainer)&
+       (db.client_list.id_client==id_client)).delete()
+
+"""
+User interface for viewing current client/trainer relationships
+"""
+@auth.requires_login()
+def client_list():
+    clients = db((db.client_list.id_trainer==auth.user_id) &
+                 (db.client_list.id_client==db.auth_user.id)
+                 ).select(db.auth_user.ALL)
+    return dict(clients=clients)
+
+def setOneRm():
+    record = db.auth_user[request.args(0, cast=int)]
+    oneRm = request.vars.oneRm[request.args(1, cast=int)-1]
+    record.update_record(one_rm=oneRm)
 
 """
 User interface for managing exercises
@@ -37,185 +163,66 @@ def manage_exercises():
     return dict(form=form)
 
 """
-User interface to add or remove exercises from a workout
-"""
-@auth.requires_login()
-def workout_exercises():
-    id_workout = request.args(0, cast=int)
-    if not owns_workout(id_workout):
-        redirect(URL('error'))
-    exercises = db((db.exercise.id==db.workout_exercises.id_exercise)&
-                   (db.workout_exercises.id_workout==id_workout)
-                   ).select(db.exercise.ALL)
-    form = FORM(INPUT(_name='keyword', requires=IS_NOT_EMPTY()),
-                INPUT(_type='submit', _style="vertical-align:top"),
-                _method='GET')
-    records = db(db.exercise).select(limitby=(0, 15))
-    """
-    TODO: add exercise tags to query
-    """
-    if form.accepts(request.get_vars):
-        query = db.exercise.name.contains(form.vars.keyword)
-        query = query|db.exercise.notes.contains(form.vars.keyword)
-        records = db(query).select(db.exercise.ALL)
-    return dict(exercises=exercises, id_workout=id_workout, form=form, records=records)
-
-"""
-Allows a trainer to add a client to a workout
-"""
-@auth.requires_login()
-def add_clients():
-    id_workout = request.args(0, cast=int)
-    if not owns_workout(id_workout):
-        redirect(URL('error'))
-    workouts = (id_workout==db.workout.id)
-    users = (db.auth_user.role=="Client")
-    records = db(users & workouts).select(db.auth_user.ALL, limitby=(0, 15))
-
-    form = FORM(INPUT(_name='keyword', requires=IS_NOT_EMPTY()),
-                INPUT(_type='submit', _style="vertical-align:top"),
-                _method='GET')
-    """
-    TODO
-    -allow for first + last name query ex. 'John Smith'
-    """
-    if form.accepts(request.get_vars):
-        query = db.auth_user.first_name.contains(form.vars.keyword)
-        query = query|db.auth_user.last_name.contains(form.vars.keyword)
-        query = query|db.auth_user.email.contains(form.vars.keyword)
-        records = db(query & users & workouts).select(db.auth_user.ALL)
-    return dict(form=form, records=records, id_workout=id_workout)
-
-"""
-Changes the membership status of a client in a workout
-"""
-@auth.requires_login()
-def modify_membership():
-    id_workout = request.args(0, cast=int)
-    if not owns_workout(id_workout):
-        redirect(URL('error'))
-    id_client = request.args(1,cast=int)
-    if id_client == 0:
-        users = db(db.auth_user).select()
-        for user in users:
-                add_member(id_workout, user.id)
-        redirect(URL('add_clients', args=id_workout))
-    elif id_client == -1:
-        users = db(db.auth_user).select()
-        for user in users:
-                remove_member(id_workout, user.id)
-        redirect(URL('add_clients', args=id_workout))
-    else:
-        deleted = remove_member(id_workout, id_client)
-        if deleted==0:
-            add_member(id_workout, id_client)
-            return 'Remove Client'
-        else:
-            return 'Add Client'
-
-"""
-Adds a client to a workout
-"""
-@auth.requires_login()
-def add_member(id_workout, id_client):
-    if not owns_workout(id_workout):
-        redirect(URL('error'))
-    db.membership.insert(id_workout=id_workout,
-                         id_client=id_client)
-
-"""
-Removes a client from a workout
-"""
-@auth.requires_login()
-def remove_member(id_workout, id_client):
-    if not owns_workout(id_workout):
-        redirect(URL('error'))
-    return db((db.membership.id_workout==id_workout)&
-       (db.membership.id_client==id_client)).delete()
-
-"""
-Interface to manage reps for an exercise in a workout.
-Each record is unique based on the combination of
-(workout id, exercise id, user id, and level).
-Users can have a record for each sequential level
-"""
-@auth.requires_login()
-def manage_reps():
-    id_workout = request.args(0, cast=int)
-    if not owns_workout(id_workout):
-        redirect(URL('error'))
-    id_exercise = request.args(1, cast=int)
-    #Set visibility for reps columns
-    db.reps.id_exercise.readable = False
-    db.reps.id_exercise.writable = False
-    db.reps.id_exercise.default = id_exercise
-    db.reps.id_workout.readable = False
-    db.reps.id_workout.writable = False
-    db.reps.id_workout.default = id_workout
-    db.reps.id.readable = False
-    members = ((db.membership.id_client==db.auth_user.id)&
-               (db.membership.id_workout==id_workout))
-    db.reps.id_client.requires = IS_IN_DB(db(members),
-                                          db.auth_user.id,
-                                          '%(first_name)s %(last_name)s (%(id)s)')
-
-    workouts = (db.reps.id_workout==id_workout)
-    exercises = (db.reps.id_exercise==id_exercise)
-    session.id_workout=id_workout
-    session.id_exercise=id_exercise
-    form = SQLFORM.grid(workouts & exercises, oncreate=remove_level, args=request.args[:2])
-    return dict(form=form, id_workout=id_workout)
-
-"""
-Deletes a (reps) record for a user based on input level
-"""
-@auth.requires_login()
-def remove_level(form):
-    print form.vars
-    record = level_record(session.id_workout,
-                          session.id_exercise,
-                          form.vars.id_client,
-                          form.vars.c_level)
-    db((db.reps.id_workout==session.id_workout)&
-       (db.reps.id_exercise==session.id_exercise)&
-       (db.reps.id_client==form.vars.id_client)&
-       (db.reps.c_level==form.vars.c_level)&
-       (db.reps.id!=form.vars.id)).delete()
-
-
-"""
-Changes the membership status of a exercise in a workout
-"""
-@auth.requires_login()
-def modify_exercise_list():
-    id_workout = request.args(0, cast=int)
-    id_exercise = request.args(1,cast=int)
-    deleted = remove_exercise(id_workout, id_exercise)
-    if deleted==0:
-        add_exercise(id_workout, id_exercise)
-    redirect(URL('workout_exercises', args=id_workout))
-
-"""
-Adds an exercise to a workout
-"""
-@auth.requires_login()
-def add_exercise(id_workout, id_exercise):
-    db.workout_exercises.insert(id_workout=id_workout,
-                                id_exercise=id_exercise)
-
-"""
-Removes an exercise from a workout
-"""
-@auth.requires_login()
-def remove_exercise(id_workout, id_exercise):
-    return db((db.workout_exercises.id_workout==id_workout)&
-              (db.workout_exercises.id_exercise==id_exercise)
-              ).delete()
-
-"""
-TODO
--display list of queued items of users requesting to level up
--allows trainer to approve items (changes current level of reps and removes item from the queue)
+User interface for managing client upgrades
+-displays list of queued items of users requesting to level up
+-allows trainer to approve or deny items
 """
 def my_queue():
-    return dict()
+    if not is_trainer():
+        redirect(URL('error'))
+    records = db(db.queue.id_trainer == auth.user_id).select()
+    return dict(records=records)
+
+def level_up_client():
+    if not is_trainer():
+        redirect(URL('error'))
+    reps = db.reps[request.args(0, cast=int)]
+    workout = db.workout[request.args(1, cast=int)]
+    new_level = request.args(2, cast=int)
+    in_workout = request.args(3, cast=bool)
+    new_reps = db((db.reps.id_workout==reps.id_workout) & (db.reps.code[0]==reps.code[0]) & (db.reps.c_level==new_level)).select()
+    if not new_reps:
+        if in_workout:
+            session.flash = "Requested level not available"
+        response.flash = (("Next level not found. Please add the next level for this workout: " +
+                          "{0} (level:{1}, code:{2}). Then reload this page.").format(workout.name, new_level, reps.code))
+    else:
+        old_reps = db((db.reps.id_workout==reps.id_workout) & (db.reps.code[0]==reps.code[0]) & (db.reps.c_level==reps.c_level)).select()
+        for r in old_reps:
+            r.update_record(level_up=False, is_current=False)
+        for r in new_reps:
+            r.update_record(level_up=False, is_current=True)
+        remove_from_queue(reps.id)
+    if in_workout:
+        redirect(URL('view', 'workout', args=[workout.id]))
+
+def remove_from_queue(id_reps):
+    db(db.queue.id_reps == id_reps).delete()
+
+def reset_client():
+    if not is_trainer():
+        redirect(URL('error'))
+    reps = db.reps[request.args(0, cast=int)]
+    reps.update_record(level_up=False, is_current=True)
+    remove_from_queue(reps.id)
+
+"""
+User interface for viewing and removing client feedback
+"""
+def feedback():
+    if not is_trainer():
+        redirect(URL('error'))
+    feedback = db((db.feedback.id_workout == db.workout.id)
+                  &(db.workout.id_trainer == auth.user_id)
+                  &(db.auth_user.id==db.workout.id_client)).select()
+    return dict(feedback=feedback)
+
+def delete_feedback():
+    id_feedback = request.args(0, cast=int)
+    deleted = db(db.feedback.id == id_feedback).delete()
+    if deleted == 1:
+        session.flash = "Record deleted"
+        redirect(URL('feedback'))
+
+def error():
+    return dict(error="An error has occurred.")

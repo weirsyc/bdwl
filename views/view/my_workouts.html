@@ -1,0 +1,51 @@
+{{extend 'layout.html'}}
+
+<h3 class="well">
+    My Workouts
+</h3>
+
+{{if not workouts:}}
+<h3>
+    You do not have any workouts yet. Please contact your trainer.
+</h3>
+
+{{else:}}
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Trainer Name</th>
+                <th>Trainer Email</th>
+                <th style="text-align: center">View this Workout</th>
+                <th style="text-align: center">Leave Feedback</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{for workout in workouts:}}
+                <tr>
+                    <td>{{=workout.name}}</td>
+                    <td>{{=get_trainer_name(workout.id_trainer)}}</td>
+                    <td>{{=get_trainer_email(workout.id_trainer)}}</td>
+                    <td style="text-align: center">
+                        <a href="{{=URL('view','workout', args=[workout.id])}}" class="btn btn-primary">&#10145;</a></td>
+                    <td style="text-align: center">
+                        <a href="{{=URL('view','add_feedback',args=[workout.id])}}" class="btn btn-primary">&#10145;</a></td>
+                </tr>
+            {{pass}}
+        </tbody>
+    </table>
+</div>
+
+{{pass}}
+
+<style>
+.table-responsive {
+    width: 100%;
+    overflow-y: hidden;
+    overflow-x: auto;
+    overflow-style: autohiding-scrollbar;
+    -webkit-overflow-scrolling: touch;
+}
+</style>

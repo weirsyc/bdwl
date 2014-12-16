@@ -1,0 +1,23 @@
+{{extend 'layout.html'}}
+
+<h1>My Queue</h1>
+<br />
+<table class="table table-striped table-bordered table-hover" style="width: auto; font-size:16px">
+    {{for row in records:}}
+        <tr>
+            <td>{{=row.queue_message}}</td>
+            <td>{{=A("Accept", _class="btn btn-primary btn-small",
+                    confirm='Are you sure you would like to promote this user?',
+                    callback=URL('level_up_client', args=[row.id_reps, row.id_workout, row.new_level, False]),
+                    _style="padding-bottom:0; padding-top:0;",
+                    delete="tr"
+                )}}</td>
+            <td>{{=A("Deny", _class="btn btn-primary btn-small",
+                    confirm='Are you sure you would like to reset this user?',
+                    callback=URL('reset_client', args=[row.id_reps]),
+                    _style="padding-bottom:0; padding-top:0;",
+                    delete="tr"
+                )}}</td>
+        </tr>
+    {{pass}}
+</table>

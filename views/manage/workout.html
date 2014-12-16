@@ -1,0 +1,12 @@
+{{extend 'layout.html'}}
+
+<h3>
+    <a href="{{=URL('manage', 'primary', args=[id_workout])}}"
+       class="btn btn-primary">Manage Primary Exercises</a>
+</h3>
+
+<h1>
+    Workout : {{=name}}
+</h1>
+
+{{=form}}

@@ -1,0 +1,46 @@
+{{extend 'layout.html'}}
+
+<!-- need to source this in any view which has a LOAD chart -->
+<script src="https://www.google.com/jsapi" type="text/javascript"></script>
+
+{{for workout in workouts:}}
+    <!-- Here, data and options same for both charts -->
+    <!-- user_signature works if using logged-in users ... not well tested -->
+    {{ data_url = URL('get_report_data.json', args=[workout.id], user_signature=True)
+      #options are documented at https://developers.google.com/chart/
+      options ={'title':'Level Distribution', 'is3D': 'true', 'height':500}
+              }}
+
+    <div class="well">
+        <div class="container-fluid">
+            <h3>
+                {{=workout.name}}
+            </h3>
+            <div class="row-fluid">
+                <div class="span8">
+                    {{=LOAD('plugin_google_chart','plugin_google_chart.load',ajax=True,
+                            user_signature=True,vars={'type':'pie','data_url':data_url,
+                            'options_dict':options})
+                    }}
+                </div>
+                <div class="span4">
+                    <p>
+                        <span style="font-weight:bold;">Upper Pull:</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eleifend, mauris quis pulvinar mattis, magna lacus luctus elit, fringilla accumsan nisi est quis nibh. Fusce eget sodales purus.
+                    </p>
+                    <p>
+                        <span style="font-weight:bold;">Upper Push:</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eleifend, mauris quis pulvinar mattis, magna lacus luctus elit, fringilla accumsan nisi est quis nibh. Fusce eget sodales purus.
+                    </p>
+                    <p>
+                        <span style="font-weight:bold;">Lower Pull:</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eleifend, mauris quis pulvinar mattis, magna lacus luctus elit, fringilla accumsan nisi est quis nibh. Fusce eget sodales purus.
+                    </p>
+                    <p>
+                        <span style="font-weight:bold;">Lower Push:</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eleifend, mauris quis pulvinar mattis, magna lacus luctus elit, fringilla accumsan nisi est quis nibh. Fusce eget sodales purus.
+                    </p>
+                    <p>
+                        <span style="font-weight:bold;">Core:</span> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eleifend, mauris quis pulvinar mattis, magna lacus luctus elit, fringilla accumsan nisi est quis nibh. Fusce eget sodales purus.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{{pass}}

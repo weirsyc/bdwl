@@ -1,0 +1,28 @@
+{{extend 'layout.html'}}
+<h1>Manage Clients</h1>
+
+<a href="{{=URL('manage', 'client_list')}}"
+   class="btn btn-primary">&lt;&lt; Go Back</a><p></p>
+
+<div>
+    <p>Search for users by name or email</p>
+    {{=form}}
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover" style="max-width:800px">
+        <h4>
+            USERS
+        </h4>
+    {{for row in records:}}
+        <tr>
+            <td>{{=row.first_name}}</td>
+            <td>{{=row.last_name}}</td>
+            <td>{{=row.email}}</td>
+            <td style="text-align: center">{{=A('Add Client' if not is_client(auth.user_id, row.id) else 'Remove Client',
+                _class="btn btn-primary btn-small",callback=URL('modify_membership',args=(auth.user_id, row.id)),
+                target="<self>")}}</td>
+        </tr>
+    {{pass}}
+    </table>
+</div>

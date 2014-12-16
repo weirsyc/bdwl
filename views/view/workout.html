@@ -1,0 +1,200 @@
+{{extend 'layout.html'}}
+    <h3 class="well" style="text-indent:30px;">
+        {{=workout.name}}
+    </h3>
+    {{if primary_row:}}
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th style="text-align:center">PRIMARY</th>
+                <th style="text-align:center">Exercise</th>
+                <th></th>
+                <th style="text-align:center">Set 1</th>
+                <th style="text-align:center">Set 2</th>
+                <th style="text-align:center">Set 3</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{for row in primary_row:}}
+            <tr>
+                <td style="text-align:center; padding-top: 20px;">Week {{=row.primary_reps.c_week}}
+                    {{if is_trainer():}}
+                    &nbsp;<a href="{{=URL('decrease_week', args=[row.primary_reps.id])}}" class="btn btn-primary btn-small">&#10134;</a>
+                    <a href="{{=URL('increase_week', args=[row.primary_reps.id])}}" class="btn btn-primary btn-small">&#10133;</a>
+                                                                  {{pass}}</td>
+                <td style="text-align:center; padding-top: 20px;">
+                    <a href="{{=URL('exercise', args=[row.primary_reps.id_exercise])}}">{{=row.exercise.name}}</a></td>
+                </td>
+                <td>
+                    <div style="text-align:center">
+                    LBS<hr />
+                    REPS
+                    </div>
+                </td>
+                <td>
+                    <div style="text-align:center">
+                    {{weight = calculate_oneRm(workout.id_client, row.primary_reps.weight1)}}
+                    {{if is_number(weight):}}
+                        {{weight = int(weight)}}
+                    {{pass}}
+                    {{if not weight:}}
+                    {{="--"}}
+                    {{pass}}
+                    {{=weight}}<hr />
+                    {{=row.primary_reps.set1}}
+                    </div>
+                </td>
+                <td>
+                    <div style="text-align:center">
+                        {{weight = calculate_oneRm(workout.id_client, row.primary_reps.weight2)}}
+                        {{if is_number(weight):}}
+                            {{weight = int(weight)}}
+                        {{pass}}
+                        {{if not weight:}}
+                            {{="--"}}
+                        {{pass}}
+                        {{=weight}}<hr />
+                        {{=row.primary_reps.set2}}
+                    </div>
+                </td>
+                <td>
+                    <div style="text-align:center">
+                        {{weight = calculate_oneRm(workout.id_client, row.primary_reps.weight3)}}
+                        {{if is_number(weight):}}
+                            {{weight = int(weight)}}
+                        {{pass}}
+                        {{if not weight:}}
+                            {{="--"}}
+                        {{pass}}
+                        {{=weight}}<hr />
+                        {{=row.primary_reps.set3}}
+                    </div>
+                </td>
+            </tr>
+            {{pass}}
+        </tbody>
+    </table>
+    {{pass}}
+</div>
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th></th>
+                <th style="text-align:center">Level</th>
+                <th style="text-align:center">Exercise</th>
+                <th></th>
+                <th style="text-align:center">Set 1</th>
+                <th style="text-align:center">Set 2</th>
+                <th style="text-align:center">&#9650;</th>
+                <th style="text-align:center">LEVEL UP</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{for row in rows:}}
+            <tr>
+                <td style="text-align:center; padding-top: 20px;">{{=row.reps.code}}</td>
+                <td style="text-align:center; padding-top: 20px;">{{if not row.reps.is_accessory:
+                                                                    =row.reps.c_level
+                                                                    else:
+                                                                    ="--"
+                                                                    pass}}</td>
+                <td style="text-align:center; padding-top: 20px;">
+                    <a href="{{=URL('exercise', args=[row.reps.id_exercise])}}">{{=row.exercise.name}}</a></td>
+                <td>
+                    <div style="text-align:center">
+                    LBS<hr />
+                    REPS
+                    </div>
+                </td>
+                <td>
+                    <div style="text-align:center">
+                        {{weight = calculate_weight(workout.id, row.reps.variance)}}
+                        {{if is_number(weight):}}
+                            {{weight = int(weight)}}
+                        {{pass}}
+                        {{=weight}}<hr />
+                        {{=row.reps.reps1}}
+                    </div>
+                </td>
+                <td>
+                    <div style="text-align:center">
+                        {{=weight}}<hr />
+                        {{=row.reps.reps2}}
+                    </div>
+                </td>
+                <td>
+                    {{if not row.reps.level_up and not row.reps.is_accessory:}}
+                        <div style="text-align:center">
+                        {{=weight}}<hr />
+                            {{if is_trainer():}}
+                            {{=A(unichr(9650), _class="btn btn-primary btn-small btn-success",
+                                     _href=URL('manage', 'level_up_client', args=[row.reps.id, workout.id, row.reps.c_level + 1, True]),
+                                     _style="padding-bottom:0; padding-top:0;",
+                                     )}}
+                            {{=A(unichr(9660), _class="btn btn-primary btn-small btn-danger",
+                                     _href=URL('manage', 'level_up_client', args=[row.reps.id, workout.id, row.reps.c_level - 1, True]),
+                                     _style="padding-bottom:0; padding-top:0;",
+                                     )}}
+                            {{else:}}
+                                <div id="checkbox">
+                                {{=A(unichr(9650), _class="btn btn-primary btn-small btn-success",
+                                     confirm='Are you sure you would like to notify your trainer about a level up?',
+                                     callback=URL('pass_level', args=[workout.id, row.reps.code, row.reps.c_level, True]),
+                                     _style="padding-bottom:0; padding-top:0;",
+                                     delete="#checkbox"
+                                     )}}
+                                </div>
+                            {{pass}}
+                        </div>
+                    {{else:}}
+                        <div style="text-align:center">
+                        &#160;<hr />&#160;
+                        </div>
+                    {{pass}}
+                </td>
+                <td>
+                    {{if not row.reps.is_accessory:}}
+                        <div style="text-align:center">
+                        {{=weight}}<hr />
+                        {{=row.reps.level_reps}}
+                        </div>
+                    {{else:}}
+                        <div style="text-align:center">
+                        &#160;<hr />&#160;
+                        </div>
+                    {{pass}}
+                </td>
+            </tr>
+            {{pass}}
+        </tbody>
+    </table>
+</div>
+<br />
+{{if workout.excel_file:}}
+<div>
+    <p>
+        <a href="{{=URL('download', args=workout.excel_file)}}"
+               class="btn btn-primary btn-small">Download</a>
+    </p>
+</div>
+{{pass}}
+<div class="well">
+    <p style="font-weight: bold;">Notes:</p>
+    <p style="max-width:auto;word-wrap:break-word;">
+        {{=workout.notes}}
+    </p>
+</div>
+<a href="{{=URL('view','add_feedback',args=[workout.id])}}" class="btn btn-primary">Leave Feedback &#10145;</a>
+
+
+<style>
+.table-responsive {
+    width: 100%;
+    overflow-y: hidden;
+    overflow-x: auto;
+    overflow-style: autohiding-scrollbar;
+    -webkit-overflow-scrolling: touch;
+}
+</style>

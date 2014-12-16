@@ -1,0 +1,198 @@
+{{extend 'layout.html'}}
+<div class="page-header">
+    <h1>Excel File Upload Guide</h1>
+</div>
+<p>
+    Using excel files is a quick and easy way to upload your workouts to the Level Train system.
+    Following this guide will ensure that your workout can be successfully uploaded.
+    If you have any questions, feel free to email Level Train administration at LevelTrain@gmail.com.
+</p>
+
+        <h4>
+            <span style="font-weight:bold;">IMPORTANT:</span> The end of the spreadsheet must have a row with a
+            "<span style="font-weight:bold;">*</span>" in the first column. This indicates the end of a spreadsheet. See the full example below.
+        </h4>
+
+<div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">Headers</h3>
+    </div>
+    <div class="panel-body">
+        The headers specify which columns will be read and understood by the system.
+        Headers will be properly be read by the system if they follow these requirements:
+        <ul>
+            <li>
+                The headers <span style="font-weight:bold;">MUST</span> all appear on the same line.
+            </li>
+            <li>
+                A blank line <span style="font-weight:bold;">MUST</span> appear before the headers,
+                unless it is the first line of the spreadsheet.
+            </li>
+            <li>
+                The spelling of any header <span style="font-weight:bold;">MUST</span> exactly match one of the following keywords:
+                <ul>
+                    <li>
+                        Exercise
+                    </li>
+                </ul>
+            </li>
+            <li>
+                The order of appearance of these headers does not matter.
+            </li>
+        </ul>
+
+        <h4>
+            Example
+        </h4>
+        <div class="media">
+            #TODO place header pic here
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+      <h3 class="panel-title">Main Data</h3>
+    </div>
+    <div class="panel-body">
+        <ul>
+            <li>Every row following the headers will be read into the database.</li>
+            <li>An empty line MUST NOT appear immediately after a header line.</li>
+            <li>Each row indicates a level in ascending order.</li>
+            <li>The user is able to import as many levels as they would like for a workout section.</li>
+            <li>A blank line signifies the end of a workout section.</li>
+            <li>The first level (first row) will be the initial exercise shown to the client.</li>
+        </ul>
+        <h4>
+            Example
+        </h4>
+        <div class="media">
+            #TODO place header pic here
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-success">
+    <div class="panel-heading">
+      <h3 class="panel-title">Accessories</h3>
+    </div>
+    <div class="panel-body">
+        On the same line as an exercise for a workout, accessories can be added for pairing exercises together.
+        The headers for these accessories MUST be on the same line as regular exercises, and the following keywords are accepted:
+        <ul>
+            <li></li>
+            <li></li>
+        </ul>
+        <h4>
+            Example
+        </h4>
+        <div class="media">
+            #TODO place header pic here
+        </div>
+        The first level for this section will be shown to the client as follows:
+        <div class="media">
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-danger">
+    <div class="panel-heading">
+      <h3 class="panel-title">Full Spreadsheet Example</h3>
+    </div>
+    <div class="panel-body">
+        <h4>
+            Example
+        </h4>
+        <div class="media">
+            #TODO place header pic here
+        </div>
+        
+        #TODO download link
+    </div>
+</div>
+
+
+{{=BEAUTIFY(response._vars)}}
+
+
+<style>
+.panel {
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.panel-heading {
+  padding: 10px 15px;
+  margin: -15px -15px 15px;
+  font-size: 17.5px;
+  font-weight: 500;      
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #dddddd;
+  border-top-right-radius: 3px;
+  border-top-left-radius: 3px;
+}
+
+.panel-footer {
+  padding: 10px 15px;
+  margin: 15px -15px -15px;
+  background-color: #f5f5f5;
+  border-top: 1px solid #dddddd;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+.panel-primary {
+  border-color: #428bca;
+}
+
+.panel-primary .panel-heading {
+  color: #ffffff;
+  background-color: #428bca;
+  border-color: #428bca;
+}
+
+.panel-success {
+  border-color: #d6e9c6;
+}
+
+.panel-success .panel-heading {
+  color: #468847;
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+}
+
+.panel-warning {
+  border-color: #fbeed5;
+}
+
+.panel-warning .panel-heading {
+  color: #c09853;
+  background-color: #fcf8e3;
+  border-color: #fbeed5;
+}
+
+.panel-danger {
+  border-color: #eed3d7;
+}
+
+.panel-danger .panel-heading {
+  color: #b94a48;
+  background-color: #f2dede;
+  border-color: #eed3d7;
+}
+
+.panel-info {
+  border-color: #bce8f1;
+}
+
+.panel-info .panel-heading {
+  color: #3a87ad;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+}
+</style>
