@@ -5,13 +5,31 @@
 <p>
     Using excel files is a quick and easy way to upload your workouts to the Level Train system.
     Following this guide will ensure that your workout can be successfully uploaded.
-    If you have any questions, feel free to email Level Train administration at LevelTrain@gmail.com.
+    If you have any questions, feel free to email {{=site_name}} administration at {{=site_email}}.
 </p>
 
+<div class="panel panel-general">
+    <div class="panel-heading">
+      <h3 class="panel-title">General</h3>
+    </div>
+    <div class="panel-body">
         <h4>
-            <span style="font-weight:bold;">IMPORTANT:</span> The end of the spreadsheet must have a row with a
-            "<span style="font-weight:bold;">*</span>" in the first column. This indicates the end of a spreadsheet. See the full example below.
+            General
         </h4>
+        <ul>
+            <li>Your spreadsheet data <span>MUST</span> be on Speadsheet1 of the excel file.</li>
+            <li>Each section of the workout is separated by a blank line</li>
+            <li>Each section of the workout is imported in sequential order (first section assigned A1, second assigned B1, third C1, etc.)</li>
+            <li><span>IMPORTANT:</span> The end of the spreadsheet must have a row with a
+            <span>*</span> in the first column. This indicates the end of the workout. See the full example below.</li>
+        </ul>
+        <div class="media">
+            #TODO place header pic here
+        </div>
+        
+        #TODO download link
+    </div>
+</div>
 
 <div class="panel panel-info">
     <div class="panel-heading">
@@ -22,19 +40,32 @@
         Headers will be properly be read by the system if they follow these requirements:
         <ul>
             <li>
-                The headers <span style="font-weight:bold;">MUST</span> all appear on the same line.
+                The headers <span>MUST</span> all appear on the same line.
             </li>
             <li>
-                A blank line <span style="font-weight:bold;">MUST</span> appear before the headers,
+                A blank line <span>MUST</span> appear before the headers,
                 unless it is the first line of the spreadsheet.
             </li>
             <li>
-                The spelling of any header <span style="font-weight:bold;">MUST</span> exactly match one of the following keywords:
+                The spelling of any header <span>MUST</span> exactly match one of the following keywords:
                 <ul>
-                    <li>
-                        Exercise
-                    </li>
+                    <li><span>Upper Push</span> - Exercise category</li>
+                    <li><span>Upper Pull</span> - Exercise category</li>
+                    <li><span>Lower Push</span> - Exercise category</li>
+                    <li><span>Lower Pull</span> - Exercise category</li>
+                    <li><span>Core</span> - Exercise category</li>
+                    <li><span>Weight</span> - If this is set to a number, it will be ignored.
+                        Should be empty or set to a word (ex. band, bw, bybar, etc.)
+                    <li><span>Exercise</span> - Name of an exercise; all ascii characters accepted</li>
+                    <li><span>Set 1</span> - Number of reps for first set of this exercise. (ex. 6, 10R/L, etc.)</li>
+                    <li><span>Set 2</span> - Number of reps for second set of this exercise</li>
+                    <li><span>Level-Up</span> - Number of reps needed to proceed to next level</li>
+                    <li><span>Variance</span> - Percent of client's body weight for this exercise
+                        (ex. Body Weight:150lbs & Variance:0.5 -> Weight:75lbs)</li>
                 </ul>
+            </li>
+            <li>
+                Headers of other columns that do not match any of these keywords will be ignored.
             </li>
             <li>
                 The order of appearance of these headers does not matter.
@@ -50,18 +81,48 @@
     </div>
 </div>
 
-<div class="panel panel-primary">
+<div class="panel panel-categories">
+    <div class="panel-heading">
+      <h3 class="panel-title">Exercise Categories</h3>
+    </div>
+    <div class="panel-body">
+        The exercise category is typically the first column of a workout.
+        It determines which muscle group is used during this set of exercises.
+        This column also is used when creating reports of client progress through the {{=site_name}} workout.
+        <br /><br />
+        These muscle groups are broken up into the following five categories:
+        <ul>
+            <li>Upper Push</li>
+            <li>Upper Pull</li>
+            <li>Lower Push</li>
+            <li>Lower Pull</li>
+            <li>Core</li>
+        </ul>
+        Any other input category will be ignored.
+        <br /><br />
+        More information about categories can be found by viewing a client report.
+        <h4>
+            Example
+        </h4>
+        <div class="media">
+            #TODO place header pic here
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-main">
     <div class="panel-heading">
       <h3 class="panel-title">Main Data</h3>
     </div>
     <div class="panel-body">
         <ul>
             <li>Every row following the headers will be read into the database.</li>
-            <li>An empty line MUST NOT appear immediately after a header line.</li>
+            <li>An empty line <span>MUST NOT</span> appear immediately after a header line.</li>
             <li>Each row indicates a level in ascending order.</li>
             <li>The user is able to import as many levels as they would like for a workout section.</li>
             <li>A blank line signifies the end of a workout section.</li>
             <li>The first level (first row) will be the initial exercise shown to the client.</li>
+            <li>You can alter the current level by going to the client's workout page and pressing the arrow buttons.</li>
         </ul>
         <h4>
             Example
@@ -78,10 +139,15 @@
     </div>
     <div class="panel-body">
         On the same line as an exercise for a workout, accessories can be added for pairing exercises together.
-        The headers for these accessories MUST be on the same line as regular exercises, and the following keywords are accepted:
+        The headers for these accessories <span>MUST</span> be on the same line as regular exercises, and the following keywords are accepted:
         <ul>
-            <li></li>
-            <li></li>
+            <li><span>Accessory</span> - Name of an exercise; all ascii characters accepted</li>
+            <li><span>Weight</span> - If this is set to a number, it will be ignored.
+                Should be empty or set to a word (ex. band, bw, bybar, etc.)
+            <li><span>Set 1</span> - Number of reps for first set of this exercise. (ex. 6, 10R/L, etc.)</li>
+            <li><span>Set 2</span> - Number of reps for second set of this exercise</li>
+            <li><span>Variance</span> - Percent of client's body weight for this exercise
+                (ex. Body Weight:150lbs & Variance:0.5 -> Weight:75lbs)</li>
         </ul>
         <h4>
             Example
@@ -94,6 +160,23 @@
         </div>
     </div>
 </div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+      <h3 class="panel-title">Primary</h3>
+    </div>
+    <div class="panel-body">
+        <h4>
+            Example
+        </h4>
+        <div class="media">
+            #TODO place header pic here
+        </div>
+        
+        #TODO download link
+    </div>
+</div>
+
 
 <div class="panel panel-danger">
     <div class="panel-heading">
@@ -130,7 +213,7 @@
   padding: 10px 15px;
   margin: -15px -15px 15px;
   font-size: 17.5px;
-  font-weight: 500;      
+  font-weight: 500;
   background-color: #f5f5f5;
   border-bottom: 1px solid #dddddd;
   border-top-right-radius: 3px;
@@ -157,13 +240,13 @@
 }
 
 .panel-success {
-  border-color: #d6e9c6;
+  border-color: brown;
 }
 
 .panel-success .panel-heading {
-  color: #468847;
-  background-color: #dff0d8;
-  border-color: #d6e9c6;
+  color: #ffffff;
+  background-color: brown;
+  border-color: brown;
 }
 
 .panel-warning {
@@ -171,28 +254,60 @@
 }
 
 .panel-warning .panel-heading {
-  color: #c09853;
+  color: #ffffff;
   background-color: #fcf8e3;
   border-color: #fbeed5;
 }
 
 .panel-danger {
-  border-color: #eed3d7;
+  border-color: purple;
 }
 
 .panel-danger .panel-heading {
-  color: #b94a48;
-  background-color: #f2dede;
-  border-color: #eed3d7;
+  color: #ffffff;
+  background-color: purple;
+  border-color: purple;
 }
 
 .panel-info {
-  border-color: #bce8f1;
+  border-color: rgb(165, 94, 0);
 }
 
 .panel-info .panel-heading {
-  color: #3a87ad;
-  background-color: #d9edf7;
-  border-color: #bce8f1;
+  color: #ffffff;
+  background-color: rgb(165, 94, 0);
+  border-color: rgb(165, 94, 0);
+}
+
+.panel-categories {
+  border-color: green;
+}
+
+.panel-categories .panel-heading {
+  color: #ffffff;
+  background-color: green;
+  border-color: green;
+}
+
+.panel-general {
+  border-color: grey;
+}
+
+.panel-main .panel-heading {
+  color: #ffffff;
+  background-color: navy;
+  border-color: navy;
+}
+
+.panel-main .panel-heading {
+  color: #ffffff;
+  background-color: navy;
+  border-color: navy;
+}
+
+
+span {
+    font-weight:bold;
+}
 }
 </style>

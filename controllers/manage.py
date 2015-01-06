@@ -21,8 +21,8 @@ def manage_workouts():
                                                _href=URL("workout",
                                                          args=[row.id]))],
                         oncreate = import_excel)
-
-    return dict(form=form)
+    workouts = db(db.workout.id_trainer==auth.user_id).select()
+    return dict(form=form, workouts=workouts)
 
 @auth.requires_login()
 def import_excel(form):

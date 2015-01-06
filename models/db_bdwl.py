@@ -155,3 +155,4 @@ def is_number(value):
         return False
 
 site_name = "Level Train"
+site_email = "LevelTrain@gmail.com"

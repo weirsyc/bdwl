@@ -10,7 +10,10 @@ ex. 105, 115, 125
 
 def index(): return dict(message="hello from excel.py")
 
+@auth.requires_login()
 def import_excel():
+    if not is_trainer():
+        redirect(URL('error'))
     id_workout = request.args(0, cast=int)
     workout_file = db.workout[id_workout].excel_file
     workbook = xlrd.open_workbook(os.path.join(request.folder, 'uploads', workout_file))
@@ -253,8 +256,11 @@ def create_exercise(id_workout, exercise_name):
     author = db.auth_user[workout.id_trainer]
     db.exercise.insert(name=exercise_name, created_by=author.id)
 
-
+@auth.requires_login()
 def excel_guide():
+    if not is_trainer():
+        redirect(URL('error'))
+    #TODO: change font size
     primary = URL('static', 'images/primary.png')
     reps = URL('static', 'images/reps.png')
     excel_picture = URL('static', 'images/excel.png')
