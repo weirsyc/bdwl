@@ -61,7 +61,12 @@
                     <li><span>Set 2</span> - Number of reps for second set of this exercise</li>
                     <li><span>Level-Up</span> - Number of reps needed to proceed to next level</li>
                     <li><span>Variance</span> - Percent of client's body weight for this exercise
-                        (ex. Body Weight:150lbs & Variance:0.5 -> Weight:75lbs)</li>
+                        (ex. Body Weight:150lbs & Variance:0.5 -> Weight:75lbs).
+                        Used to calculate the weight for this exercise.</li>
+                        <ul>
+                            <li>You may set this to a specific weight by surrounding with quotes (ex. "10", "12.5")</li>
+                            <li>You may also set this to a word (ex. band, bw, bybar, etc.)</li>
+                        </ul>
                 </ul>
             </li>
             <li>
@@ -166,6 +171,17 @@
       <h3 class="panel-title">Primary</h3>
     </div>
     <div class="panel-body">
+        For each week of a workout, a primary exercise can be added for the client to perform at the beginning of the workout.
+        The primary section is similar to the other sections, and the headers of a primary section are as follows:
+        <ul>
+            <li><span>Accessory</span> - Name of an exercise; all ascii characters accepted</li>
+            <li><span>Weight</span> - If this is set to a number, it will be ignored.
+                Should be empty or set to a word (ex. band, bw, bybar, etc.)
+            <li><span>Set 1</span> - Number of reps for first set of this exercise. (ex. 6, 10R/L, etc.)</li>
+            <li><span>Set 2</span> - Number of reps for second set of this exercise</li>
+            <li><span>Variance</span> - Percent of client's body weight for this exercise
+                (ex. Body Weight:150lbs & Variance:0.5 -> Weight:75lbs)</li>
+        </ul>
         <h4>
             Example
         </h4>

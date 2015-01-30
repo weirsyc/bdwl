@@ -42,7 +42,8 @@ def workout():
     primary = ((db.primary_reps.id_workout==id_workout) & (db.primary_reps.is_current==True))
     primary_exercises = (db.exercise.id == db.primary_reps.id_exercise)
     primary_row = db(primary & primary_exercises).select()
-    return dict(workout=workout, rows=rows, primary_row=primary_row)
+    chat_logs = db(db.chat.id_workout==id_workout).select()
+    return dict(workout=workout, rows=rows, primary_row=primary_row, chat_logs=chat_logs)
 
 @auth.requires_login()
 def pass_level():
@@ -212,3 +213,13 @@ def get_core(id_workout):
     if record:
         return int(record.c_level)
     return None
+
+def create_message():
+    user = db.auth_user[int(request.vars.id_user)]
+    chat_message = user.first_name + ": " +request.vars.new_message
+    try:
+        db.chat.insert(id_workout=int(request.vars.id_workout), chat_message=chat_message, id_sender=user.id)
+    except Exception, e:
+        print str(e)
+        return "jQuery('#messages').append(%s);" % repr(chat_message + "Message not sent.<br/>")
+    return "jQuery('#messages').append(%s);" % repr(chat_message + "<br/>")

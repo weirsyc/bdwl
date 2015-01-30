@@ -1,5 +1,70 @@
 {{extend 'layout.html'}}
 
+<script type="text/javascript" src="http://cdn.icecomm.io/icecomm.js"></script>
+<script type="text/javascript" src="{{=URL('static','js/workout_video.js')}}"></script>
+
+<div id="videoWrapper">
+    <h4>
+        Video Chat
+    </h4>
+    <div>
+        <button id="connect" class="btn btn-primary" onclick="openVideo()">
+            Connect
+        </button>
+        <button id="disableCamera" class="btn btn-primary" onclick="closeVideo()">
+            Disable Camera
+        </button>
+    </div>
+    <div id="localWrapper">
+        <div>
+            <form id="sizeButtons">
+                <label title='Small'>
+                    <input type="radio" id="radioSmall" name="size" value="small" onclick="smallVideo('localVideo')" checked>
+                </label>
+                <label title='Medium'>
+                    <input type="radio" id="radioMedium" name="size" value="medium" onclick="mediumVideo('localVideo')">
+                </label>
+                <label title='Large'>
+                    <input type="radio" id="radioLarge" name="size" value="large" onclick="largeVideo('localVideo')">
+                </label>
+            </form>
+        </div>
+        <div id="stream">
+            <video id="localVideo" autoplay>Your browser does not support HTML5 video.</video>
+        </div>
+    </div>
+    <div id="remoteWrapper">
+        <div>
+            <form id="sizeButtons">
+                <label title='Small'>
+                    <input type="radio" id="radioSmall" name="size" value="small" onclick="smallVideo('remoteVideo')" checked>
+                </label>
+                <label title='Medium'>
+                    <input type="radio" id="radioMedium" name="size" value="medium" onclick="mediumVideo('remoteVideo')">
+                </label>
+                <label title='Large'>
+                    <input type="radio" id="radioLarge" name="size" value="large" onclick="largeVideo('remoteVideo')">
+                </label>
+            </form>
+        </div>
+        <div id="stream">
+            <video id="remoteVideo" autoplay>Your browser does not support HTML5 video.</video>
+        </div>
+    </div>
+</div>
+
+<div id="chatWindowWrapper">
+    <div id="chatWindow" class="panel panel-default"></div>
+</div>
+
+<div id="messageBox">
+    <form id="messageForm">
+        <input id="message" type="text"/>
+        <input id="submission" type="submit"/>
+    </form>
+</div>
+
+
 <h1>
     Welcome to {{=site_name}}
 </h1>
@@ -37,9 +102,67 @@
     </div>
 </div>
 
+
+
 <style>
 .carousel{
   max-width:870px;
   max-height: 500px;
 }
+
+#localVideo {
+    width: 315px;
+    height: 237px;
+    padding: 10px 10px 10px 10px;
+    background-color: #097381;
+    border-radius: 10px;
+}
+
+#remoteVideo {
+    width: 315px;
+    height: 237px;
+    padding: 10px 10px 10px 10px;
+    background-color: #097381;
+    border-radius: 10px;
+}
+
+#localWrapper {
+    margin-top: 0;
+}
+
+#chatWindow {
+    width: 300px;
+    height: 300px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    overflow-y: scroll;
+    background-color: #097381;
+}
+
+#chatElement {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: white;
+    word-wrap: break-word;
+    text-align: left;
+    font-family: tahoma, verdana, arial, sans-serif;
+    opacity: 1;
+    border-radius: 10px;
+}
+
+#button {
+    width : 70px;
+}
+
+label{
+    display:inline-block;
+}
+form {
+    margin: 0;
+}
+
 </style>

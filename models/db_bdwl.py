@@ -70,6 +70,13 @@ db.define_table('feedback',
 
 db.define_table('images',
                 Field('image', 'upload'))
+
+db.define_table('chat',
+                Field('id_workout', 'reference workout', requires=IS_NOT_EMPTY()),
+                Field('chat_message', 'string', requires=IS_NOT_EMPTY()),
+                Field('id_sender', 'reference auth_user', requires=IS_NOT_EMPTY(), default=auth.user_id),
+                Field('message_date', 'datetime'))
+
 """
 TODO
 -add trainer queue table
