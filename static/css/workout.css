@@ -1,0 +1,142 @@
+.table-responsive {
+    width: 100%;
+    overflow-y: hidden;
+    overflow-x: auto;
+    overflow-style: autohiding-scrollbar;
+    -webkit-overflow-scrolling: touch;
+}
+th {
+    color: white;
+    background-color: #097381;
+}
+
+#exercise_link {
+    border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px;
+    max-width: 300px;
+    min-width:200px;
+    font-size: 16px;
+}
+
+.workout {
+    margin-right: 30px;
+}
+
+.well {
+    background-image: linear-gradient(to left,#fff,#097381);
+    color: white;
+}
+
+
+#localVideo {
+    width: 315px;
+    height: 237px;
+    padding: 10px 10px 10px 10px;
+    background-color: #097381;
+    border-radius: 10px;
+}
+
+#remoteVideo {
+    width: 315px;
+    height: 237px;
+    padding: 10px 10px 10px 10px;
+    background-color: #097381;
+    border-radius: 10px;
+}
+
+#localWrapper {
+    margin-top: 0;
+}
+
+#chatWindow {
+    height: 300px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    overflow-y: scroll;
+    background-color: #097381;
+}
+
+#chatElement {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: white;
+    word-wrap: break-word;
+    width: 75%;
+    text-align: left;
+    font-family: tahoma, verdana, arial, sans-serif;
+    border-radius: 10px;
+}
+
+#myMessage {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: rgb(0, 255, 100);
+    color: white;
+    word-wrap: break-word;
+    width: 75%;
+    text-align: left;
+    font-family: tahoma, verdana, arial, sans-serif;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+#remoteMessage {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: rgb(50, 255, 255);
+    color: white;
+    word-wrap: break-word;
+    width: 75%;
+    text-align: right;
+    font-family: tahoma, verdana, arial, sans-serif;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+#button {
+    width : 70px;
+}
+
+label{
+    display:inline-block;
+}
+form {
+    margin: 0;
+}
+
+#submission {
+    vertical-align:top;
+    margin-right: 0;
+}
+
+#chatWindowWrapper{
+    max-width: 400px;
+}
+
+#message {
+    max-width: 314px;
+    padding: 5px;
+    margin: 0;
+}
+
+#table_header th {
+    text-align:center;
+}
+
+#row_content_padding {
+    text-align:center;
+    padding-top: 20px;
+}
+
+#row_content {
+    text-align:center;
+}

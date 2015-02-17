@@ -4,6 +4,9 @@ trainers the tools they need to create personal
 workouts for their clients
 """
 
+#TODO: create new workout
+
+
 def index(): return dict(message="hello from manage.py")
 
 """
@@ -45,6 +48,7 @@ def workout():
                         args=request.args[:1],
                         onvalidation=process_new_reps)
     name = db.workout[id_workout].name
+    response.view.replace('.html','.mobile.html')
     return dict(form=form, name=name, id_workout=id_workout)
 
 """

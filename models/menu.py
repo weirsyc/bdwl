@@ -6,7 +6,7 @@
 #########################################################################
 
 response.logo = A(B('Level',SPAN('Train')),XML('&trade;&nbsp;'),
-                  _class="brand",_href="/leveltrain/default/index")
+                  _class="brand",_href="/bdwl/default/index")
 response.title = request.application.replace('_',' ').title()
 response.subtitle = ''
 

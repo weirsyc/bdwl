@@ -96,9 +96,9 @@ def is_client(id_trainer, id_client):
         return False
     return True
 
-def is_member(id_workout, id_client):
-    return db.membership(id_workout=id_workout,
-                         id_client=id_client)
+def is_member(id_workout):
+    return db.workout(id=id_workout,
+                         id_client=auth.user_id)
 
 def in_workout(id_workout, id_exercise):
     return db.workout_exercises(id_workout=id_workout,

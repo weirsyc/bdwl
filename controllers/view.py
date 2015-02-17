@@ -36,14 +36,17 @@ Display a workout to a client or trainer
 def workout():
     id_workout = request.args(0, cast=int)
     workout = db.workout[id_workout]
-    reps = ((db.reps.id_workout==id_workout) & (db.reps.is_current==True))
-    reps_exercises = (db.exercise.id == db.reps.id_exercise)
-    rows = db(reps & reps_exercises).select(orderby=db.reps.code)
-    primary = ((db.primary_reps.id_workout==id_workout) & (db.primary_reps.is_current==True))
-    primary_exercises = (db.exercise.id == db.primary_reps.id_exercise)
-    primary_row = db(primary & primary_exercises).select()
-    chat_logs = db(db.chat.id_workout==id_workout).select()
-    return dict(workout=workout, rows=rows, primary_row=primary_row, chat_logs=chat_logs)
+    if workout.id_trainer == auth.user_id or workout.id_client == auth.user_id:
+        reps = ((db.reps.id_workout==id_workout) & (db.reps.is_current==True))
+        reps_exercises = (db.exercise.id == db.reps.id_exercise)
+        rows = db(reps & reps_exercises).select(orderby=db.reps.code)
+        primary = ((db.primary_reps.id_workout==id_workout) & (db.primary_reps.is_current==True))
+        primary_exercises = (db.exercise.id == db.primary_reps.id_exercise)
+        primary_row = db(primary & primary_exercises).select()
+        chat_logs = db(db.chat.id_workout==id_workout).select()
+        return dict(workout=workout, rows=rows, primary_row=primary_row, chat_logs=chat_logs)
+    else:
+        redirect(URL('error'))
 
 @auth.requires_login()
 def pass_level():

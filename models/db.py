@@ -52,8 +52,8 @@ auth.settings.login_next = URL('view', 'my_workouts')
 auth.settings.extra_fields['auth_user']= [
     Field('role', requires=IS_IN_SET(["Trainer","Client"]), default="Client"),
     Field('weight', 'integer', requires=IS_NOT_EMPTY()),
-    Field('is_admin', 'boolean'),
-    Field('one_rm', 'integer')
+    Field('is_admin', 'boolean', readable=False, writable=False),
+    Field('one_rm', 'integer', readable=False, writable=False)
     ]
 auth.define_tables(username=False, signature=False)
 

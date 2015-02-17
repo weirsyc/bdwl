@@ -1,0 +1,22 @@
+.table-header {
+    font-weight: bold;
+    background-color: #0D8B6E;
+    color: white;
+}
+.row {
+    margin-left: 0;
+}
+
+#main {
+    overflow-x: auto;
+}
+
+.level {
+    width:25%; 
+    display:inline-block;
+}
+
+.level-up {
+    width:50%; 
+    display:inline-block;
+}
